@@ -38,11 +38,11 @@
     <label for="bill">What was the total bill? $</label>
     <input id="bill" type="number" step="0.01" placeholder="Enter total bill">
 
-    <label for="tip">How much would you like to give? (10, 12, or 15)%</label>
-    <input id="tip" type="number" step="1" placeholder="Enter tip percentage">
+    <label for="tip">How much would you like to give? (0, 10, 12, or 15)%</label>
+    <input id="tip" type="number" step="1" placeholder="Enter tip percentage" min="0">
 
     <label for="people">How many people to split the bill?</label>
-    <input id="people" type="number" step="1" placeholder="Enter number of people">
+    <input id="people" type="number" step="1" placeholder="Enter number of people" min="1">
 
     <button id="calculate-btn">Calculate Tip</button>
 
@@ -58,11 +58,11 @@
             try:
                 # Зчитування даних з полів
                 bill = float(document["bill"].value)
-                tip_percent = int(document["tip"].value)
+                tip_percent = float(document["tip"].value)
                 people = int(document["people"].value)
 
-                if bill <= 0 or tip_percent <= 0 or people <= 0:
-                    raise ValueError("All values must be positive.")
+                if bill < 0 or tip_percent < 0 or people <= 0:
+                    raise ValueError("All values must be non-negative and number of people must be positive.")
 
                 # Розрахунок чайових
                 total_tip = bill * (tip_percent / 100)
