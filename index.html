@@ -30,7 +30,6 @@
             bill_per_person = tip_as_percent / people
             final_amount = round(bill_per_person, 2)
             print(f"Кожен має сплатити по: ${final_amount}")
-            document["output"].text = "Hello, World! This is Python running in your browser!"
 
         document["run-btn"].bind("click", run_code)
     </script>
