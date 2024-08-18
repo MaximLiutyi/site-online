@@ -6,45 +6,80 @@
     <title>Tip Calculator</title>
     <!-- Підключення Brython -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.9.5/brython.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+        }
+        input, button {
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        #result {
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+        }
+    </style>
 </head>
 <body onload="brython()">
 
     <h1>Tip Calculator</h1>
 
     <!-- Поля для введення -->
-    <p>What was the total bill? $<input id="bill" type="number"></p>
-    <p>How much would you like to give? (10, 12, or 15)% <input id="tip" type="number"></p>
-    <p>How many people to split the bill? <input id="people" type="number"></p>
+    <label for="bill">What was the total bill? $</label>
+    <input id="bill" type="number" step="0.01" placeholder="Enter total bill">
 
-    <!-- Кнопка для запуску коду -->
-    <button id="calculate-btn">Calculate</button>
+    <label for="tip">How much would you like to give? (10, 12, or 15)%</label>
+    <input id="tip" type="number" step="1" placeholder="Enter tip percentage">
 
-    <!-- Поле для виводу результату -->
-    <p id="result">Кожен має сплатити по: $</p>
+    <label for="people">How many people to split the bill?</label>
+    <input id="people" type="number" step="1" placeholder="Enter number of people">
+
+    <button id="calculate-btn">Calculate Tip</button>
+
+    <!-- Поля для виводу результату -->
+    <p id="result">Each person should pay: $</p>
+    <p id="error-message" class="error"></p>
 
     <!-- Ваш Python код -->
     <script type="text/python">
         from browser import document, alert
 
-        def calculate(event):
+        def calculate_tip(event):
             try:
                 # Зчитування даних з полів
-                bil = float(document["bill"].value)
-                tip = int(document["tip"].value)
+                bill = float(document["bill"].value)
+                tip_percent = int(document["tip"].value)
                 people = int(document["people"].value)
 
-                # Розрахунок суми на кожного
-                tip_as_percent = (tip / 100 * bil + bil)
-                bill_per_person = tip_as_percent / people
-                final_amount = round(bill_per_person, 2)
+                if bill <= 0 or tip_percent <= 0 or people <= 0:
+                    raise ValueError("All values must be positive.")
+
+                # Розрахунок чайових
+                total_tip = bill * (tip_percent / 100)
+                total_bill_with_tip = bill + total_tip
+                amount_per_person = total_bill_with_tip / people
+                rounded_amount = round(amount_per_person, 2)
 
                 # Виведення результату
-                document["result"].text = f"Кожен має сплатити по: ${final_amount}"
-            except ValueError:
-                alert("Будь ласка, введіть коректні значення.")
+                document["result"].text = f"Each person should pay: ${rounded_amount}"
+                document["error-message"].text = ""
+
+            except ValueError as e:
+                document["result"].text = "Each person should pay: $"
+                document["error-message"].text = f"Error: {e}"
 
         # Зв'язування кнопки з функцією
-        document["calculate-btn"].bind("click", calculate)
+        document["calculate-btn"].bind("click", calculate_tip)
     </script>
 
 </body>
