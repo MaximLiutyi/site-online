@@ -3,35 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Python Demo with Brython</title>
+    <title>Tip Calculator</title>
     <!-- Підключення Brython -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.9.5/brython.min.js"></script>
 </head>
 <body onload="brython()">
 
-    <h1>Python Demo with Brython</h1>
+    <h1>Tip Calculator</h1>
 
-    <!-- Поле для виводу -->
-    <p id="output">Click the button to execute Python code.</p>
+    <!-- Поля для введення -->
+    <p>What was the total bill? $<input id="bill" type="number"></p>
+    <p>How much would you like to give? (10, 12, or 15)% <input id="tip" type="number"></p>
+    <p>How many people to split the bill? <input id="people" type="number"></p>
 
     <!-- Кнопка для запуску коду -->
-    <button id="run-btn">Run Python Code</button>
+    <button id="calculate-btn">Calculate</button>
+
+    <!-- Поле для виводу результату -->
+    <p id="result">Кожен має сплатити по: $</p>
 
     <!-- Ваш Python код -->
     <script type="text/python">
-        from browser import document
+        from browser import document, alert
 
-        def run_code(event):
-            print("Welcome to tip calculator!")
-            bil = float(input("What was the total bill? $"))
-            tip = int(input("How much would you like yo give? 10, 12, or 15? "))
-            people = int(input("How many people yo split the bill?"))
-            tip_as_percent = (tip / 100 * bil + bil)
-            bill_per_person = tip_as_percent / people
-            final_amount = round(bill_per_person, 2)
-            print(f"Кожен має сплатити по: ${final_amount}")
+        def calculate(event):
+            try:
+                # Зчитування даних з полів
+                bil = float(document["bill"].value)
+                tip = int(document["tip"].value)
+                people = int(document["people"].value)
 
-        document["run-btn"].bind("click", run_code)
+                # Розрахунок суми на кожного
+                tip_as_percent = (tip / 100 * bil + bil)
+                bill_per_person = tip_as_percent / people
+                final_amount = round(bill_per_person, 2)
+
+                # Виведення результату
+                document["result"].text = f"Кожен має сплатити по: ${final_amount}"
+            except ValueError:
+                alert("Будь ласка, введіть коректні значення.")
+
+        # Зв'язування кнопки з функцією
+        document["calculate-btn"].bind("click", calculate)
     </script>
 
 </body>
